@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +23,7 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/todos", getTodos)
+	router.GET("/todos/:id", getTodoById)
 	router.POST("/todos", postTodo)
 
 	// ":8080"
@@ -46,4 +48,21 @@ func postTodo(c *gin.Context) {
 
 	todos = append(todos, newTodo)
 	c.IndentedJSON(http.StatusCreated, newTodo)
+}
+
+// 特定の投稿を取得
+func getTodoById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return
+	}
+
+	for _, t := range todos {
+		if t.ID == id {
+			c.IndentedJSON(http.StatusOK, t)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "投稿が存在しません"})
 }
