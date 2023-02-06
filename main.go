@@ -25,6 +25,8 @@ func main() {
 	router.GET("/todos", getTodos)
 	router.GET("/todos/:id", getTodoById)
 	router.POST("/todos", postTodo)
+	router.PATCH("/todos/:id", patchTodo)
+	router.DELETE("/todos/:id", deleteTodo)
 
 	// ":8080"
 	router.Run()
@@ -64,5 +66,50 @@ func getTodoById(c *gin.Context) {
 			return
 		}
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "投稿が存在しません"})
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
+}
+
+// 更新
+func patchTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return
+	}
+
+	var todo todo
+
+	todo.ID = id
+	if err = c.BindJSON(&todo); err != nil {
+		return
+	}
+
+	for i, t := range todos {
+		if t.ID == id {
+			todos[i] = todo
+			c.IndentedJSON(http.StatusOK, todo)
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
+}
+
+// 削除
+func deleteTodo(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return
+	}
+
+	for i, t := range todos {
+		if t.ID == id {
+			todos = append(todos[:i], todos[i+1:]...)
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "todo(" + strconv.Itoa(id) + ") is deleted"})
+			return
+		}
+	}
+
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
 }
