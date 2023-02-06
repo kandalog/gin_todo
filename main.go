@@ -66,7 +66,7 @@ func getTodoById(c *gin.Context) {
 			return
 		}
 	}
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "該当のtodoがありません"})
 }
 
 // 更新
@@ -92,7 +92,7 @@ func patchTodo(c *gin.Context) {
 		}
 	}
 
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "該当のtodoがありません"})
 }
 
 // 削除
@@ -111,5 +111,5 @@ func deleteTodo(c *gin.Context) {
 		}
 	}
 
-	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "todo not found"})
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "該当のtodoがありません"})
 }
